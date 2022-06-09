@@ -50,7 +50,7 @@ for var in varList:
                         name = row[0]
                         date = row[4]
                         year = date.split('-')[0] # take year from date
-                        ppt = row[col]
+                        data = row[col]
 
                         # check if a new location column needs to be created
                         if name not in list[0]:
@@ -74,7 +74,7 @@ for var in varList:
 
                         # check if data has already been added
                         if not ((date in list[3]) and (len(list[outCol]) >= len(list[3]))):
-                            list[outCol].append(str(ppt)) # extract data into list
+                            list[outCol].append(str(data)) # extract data into list
 
                         doy += 1 # increment DOY
 
