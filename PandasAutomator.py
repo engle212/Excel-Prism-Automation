@@ -21,6 +21,13 @@ for var in varList:
     # create outDF for current var
     outDF = pd.DataFrame(columns=['YEAR', 'DOY', 'Date'])
     outList = []
+    
+    if var == 'ppt':
+        colName = 'ppt (mm)'
+    elif var == 'temp_low':
+        colName = 'tmin (degrees C)'
+    else:
+        colName = 'tmax (degrees C)'
 
     # create inDF for each input file
     for inFileName in os.listdir(inDir):
@@ -46,8 +53,8 @@ for var in varList:
         names.reset_index(drop=True, inplace=True)
 
         for name in names:
-            column = pd.Series(inDF.loc[inDF['Name'] == name, 'ppt (mm)']).to_frame()
-            column.rename(columns = {'ppt (mm)' : name}, inplace = True)
+            column = pd.Series(inDF.loc[inDF['Name'] == name, colName]).to_frame()
+            column.rename(columns = {colName : name}, inplace = True)
             # tack on new column and data
             outCur = pd.concat([outCur, column.reset_index(drop=True)], axis=1, ignore_index=False)
 
