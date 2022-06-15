@@ -42,22 +42,17 @@ for var in varList:
         outCur['DOY'] = inDF.drop_duplicates(subset='Date', inplace=False).index
         outCur['DOY'] = outCur['DOY'] + 1
 
-        for name in inDF.iloc[:, 0].drop_duplicates(inplace=False):
-            column = inDF.loc[inDF['Name'] == name, 'ppt (mm)']
-            #print(inDF.iloc[inDF.index[inDF['Name'] == name], 5])
-            #print(name + ' ' + str(len(inDF.loc[inDF['Name'] == name, 'ppt (mm)'])))
-            # new column, fill with data
-            outCur[name] = column
-            # try concatenation again
-            #outCur = pd.concat([outCur, column], axis=1)
+        names = inDF.iloc[:, 0].drop_duplicates(inplace=False)
+        names.reset_index(drop=True, inplace=True)
 
-        print(outCur)
+        for name in names:
+            column = pd.Series(inDF.loc[inDF['Name'] == name, 'ppt (mm)']).to_frame()
+            column.rename(columns = {'ppt (mm)' : name}, inplace = True)
+            # tack on new column and data
+            outCur = pd.concat([outCur, column.reset_index(drop=True)], axis=1, ignore_index=False)
+
         outList.append(outCur)
     outDF = pd.concat(outList, ignore_index=True)
-    print(outDF)
-    print(" ")
 
-#inDF = pd.read_csv('PRISM_ppt_tmin_tmax_stable_4km_20080101_20081231.csv', skiprows=10)
-
-
-#outDF = pd.DataFrame(columns=['YEAR', 'DOY', 'Date'])
+    # write outDF to CSV file
+    outDF.to_csv(outFilePath, index=False)
